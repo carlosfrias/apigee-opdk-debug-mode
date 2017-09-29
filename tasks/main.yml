@@ -9,10 +9,6 @@
       recurse: yes
     register: debug_scripts
 
-  - name: Examine debug_scripts
-    debug:
-      var: debug_scripts
-
   - name: Add debug flag
     lineinfile:
       path: "{{ item.path }}"
@@ -20,7 +16,7 @@
       backup: yes
       regexp: '^({{ bash_regex }})'
       line: '\1 -x'
-    with_items: "{{ debug_scripts }}"
+    with_items: "{{ debug_scripts.files }}"
 
   when: opdk_debug_mode is defined and opdk_debug_mode | trim | lower == 'on'
 
@@ -38,6 +34,6 @@
       backup: yes
       regexp: '^({{ bash_regex }}$) (-x)'
       line: '\1'
-    with_items: "{{ debug_scripts }}"
+    with_items: "{{ debug_scripts.files }}"
 
   when: opdk_debug_mode is defined and opdk_debug_mode | trim | lower == 'off'
