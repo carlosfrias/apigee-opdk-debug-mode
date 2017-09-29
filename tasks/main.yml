@@ -1,9 +1,9 @@
 ---
 # tasks file for apigee-opdk-debug-mode
 - block:
-  - name: Collect all bash scripts
+  - name: Collect all bash scripts to set debug mode
     find:
-      paths: '{{ apigee_installation_home }}'
+      paths: '{{ apigee_installation_home }}/{{ component_name | default('') }}'
       contains: '^{{ bash_regex }}'
       file_type: file
       recurse: yes
@@ -21,9 +21,9 @@
   when: opdk_debug_mode is defined and opdk_debug_mode | trim | lower == 'on'
 
 - block:
-  - name: Collect all bash scripts
+  - name: Collect all bash scripts to unset debug mode
     find:
-      paths: '{{ apigee_installation_home }}'
+      paths: '{{ apigee_installation_home }}/{{ component_name }}'
       contains: '^{{ bash_regex }} -x'
     register: debug_scripts
 
