@@ -24,7 +24,9 @@
   - name: Collect all bash scripts to unset debug mode
     find:
       paths: "{{ apigee_installation_home }}/{{ component_name | default('') }}"
-      contains: '.*bash -x'
+      contains: '^{{ bash_regex }} -x'
+      file_type: file
+      recurse: yes
     register: debug_scripts
 
   - name: Add debug flag
