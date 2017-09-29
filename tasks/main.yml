@@ -20,7 +20,7 @@
       line: '\1 -x'
     with_items: "{{ debug_scripts }}"
 
-  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lowercase== 'on'
+  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lower == 'on'
 
 - block:
   - name: Collect all bash scripts
@@ -38,4 +38,4 @@
       line: '\1'
     with_items: "{{ debug_scripts }}"
 
-  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lowercase == 'off'
+  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lower == 'off'
