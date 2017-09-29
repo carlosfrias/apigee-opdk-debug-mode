@@ -5,6 +5,8 @@
     find:
       paths: '{{ apigee_installation_home }}'
       contains: '^{{ bash_regex }}'
+      file_type: file
+      recurse: yes
     register: debug_scripts
 
   - name: Examine debug_scripts
