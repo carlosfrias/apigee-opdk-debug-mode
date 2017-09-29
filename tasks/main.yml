@@ -23,7 +23,7 @@
 - block:
   - name: Collect all bash scripts to unset debug mode
     find:
-      paths: '{{ apigee_installation_home }}/{{ component_name }}'
+      paths: '{{ apigee_installation_home }}/{{ component_name | default('') }}'
       contains: '^{{ bash_regex }} -x'
     register: debug_scripts
 
