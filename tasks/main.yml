@@ -34,7 +34,7 @@
       path: "{{ item.path }}"
       backrefs: yes
       backup: yes
-      regexp: '^({{ bash_regex }}$).*(-x)'
+      regexp: '^({{ bash_regex }}) -x'
       line: '\1'
     with_items: "{{ debug_scripts.files }}"
 
