@@ -4,28 +4,38 @@
   - name: Collect all bash scripts
     find:
       paths: '{{ apigee_installation_home }}'
-      contains: '^\#\$.*bash$'
+      contains: '^{{ bash_regex }}$'
     register: debug_scripts
+
+  - name: Examine debug_scripts
+    debug:
+      var: debug_scripts
 
   - name: Add debug flag
     lineinfile:
+      path: "{{ item.path }}"
       backrefs: yes
       backup: yes
-      regexp: '(^\#\$.*bash$)'
+      regexp: '^({{ bash_regex }})'
       line: '\1 -x'
-  when: opdk_debug_mode is defined and opdk_debug_mode == 'on'
+    with_items: "{{ debug_scripts }}"
+
+  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lowercase== 'on'
 
 - block:
   - name: Collect all bash scripts
     find:
       paths: '{{ apigee_installation_home }}'
-      contains: '^\#\$.*bash -x$'
+      contains: '^{{ bash_regex }} -x$'
     register: debug_scripts
 
   - name: Add debug flag
     lineinfile:
+      path: "{{ item.path }}"
       backrefs: yes
       backup: yes
-      regexp: '(^\#\$.*bash$) (-x)'
+      regexp: '^({{ bash_regex }}$) (-x)'
       line: '\1'
-  when: opdk_debug_mode is defined and opdk_debug_mode == 'off'
+    with_items: "{{ debug_scripts }}"
+
+  when: opdk_debug_mode is defined and opdk_debug_mode | trim | lowercase == 'off'
