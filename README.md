@@ -34,6 +34,7 @@ Including an example of how to use your role (for instance, with variables passe
          - { role: apigee-opdk-debug-mode, opdk_debug_mode: 'on' }
          
 OR
+
     - hosts: servers
       vars: 
         opdk_debug_mode: 'on'
