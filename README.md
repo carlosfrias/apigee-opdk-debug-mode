@@ -51,7 +51,7 @@ Author Information
 
 Carlos Frias
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+
 <!-- BEGIN Google Required Disclaimer -->
 
 # Not Google Product Clause
