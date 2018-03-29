@@ -33,6 +33,12 @@ Including an example of how to use your role (for instance, with variables passe
       roles:
          - { role: apigee-opdk-debug-mode, opdk_debug_mode: 'on' }
          
+OR
+    - hosts: servers
+      vars: 
+        opdk_debug_mode: 'on'
+      roles:
+      - { role: apigee-opdk-debug-mode }
 
 License
 -------
