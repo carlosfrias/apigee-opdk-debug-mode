@@ -27,7 +27,7 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This role can be used in the following ways: 
 
     - hosts: servers
       roles:
