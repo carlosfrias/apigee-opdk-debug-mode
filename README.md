@@ -1,65 +1,85 @@
-# Apigee OPDK Debug Mode
+# apigee-opdk-debug-mode — Reversible Bash Debug Toggle for OPDK Components
 
-This role will update all of the bash scripts installed for Apigee components so that they 
-execute with debug flags set. This causes bash scripts to output large amounts of content 
-that is helpful in debugging an issue
+> **An Ansible role that toggles the `-x` debug flag across all (or a single) Apigee OPDK component shell scripts — and reverses it cleanly** — enabling verbose script tracing on demand without manual edits or permanent side effects.
 
-Requirements
-------------
-
-Assumption that this is running on an node containing Apigee components. 
-
-Role Variables
---------------
-
-| Variable Name | Value | Description |
-| --- | --- | --- |
-| opdk_debug_mode | 'on' or 'off' | When variable is set then debugging is enabled on all scripts. When the variable is set to 'off' debugging is disabled on all scripts |
-| apigee_home | /opt/apigee | The variable containing the Apigee installation home |
-| component_name | { name of apigee component } | If provided then only the bashs scripts fo the component will have their debug set to on or off. If not provided then the scripts for all components on the node will be set. |
-| bash_regex | #.*bash | The line examined in every script that indicates whether the file is a bash script |  
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-This role can be used in the following ways: 
-
-    - hosts: servers
-      roles:
-         - { role: apigee-opdk-debug-mode, opdk_debug_mode: 'on' }
-         
-OR
-
-    - hosts: servers
-      vars: 
-        opdk_debug_mode: 'on'
-      roles:
-      - { role: apigee-opdk-debug-mode }
-
-License
--------
-
-Apache 2.0
-
-Author Information
-------------------
-
-Carlos Frias
-
+> [!NOTE]
+> Engineering portfolio note — this project demonstrates surgical, reversible configuration management and filesystem-scoped automation in Apigee Edge Private Cloud. See the [skills assessment →](SKILLS-ASSESSMENT.md) for the expertise applied.
 
 <!-- BEGIN Google Required Disclaimer -->
 
-# Not Google Product Clause
+## Not Google Product Clause
 
 This is not an officially supported Google product.
 <!-- END Google Required Disclaimer -->
-<!-- BEGIN Google How To Contribute -->
-# How to Contribute
 
-We'd love to accept your patches and contributions to this project. Please review our [guidelines](CONTRIBUTING.md).
-<!-- END Google How To Contribute -->
+---
+
+## What the role actually does
+
+`tasks/main.yml` performs one of two mutually exclusive blocks depending on `opdk_debug_mode`:
+
+**When `opdk_debug_mode: 'on'`**
+
+1. **`find`** — recursively locates every file under `{{ apigee_home }}/{{ component_name | default('') }}` whose first line matches `^{{ bash_regex }}` (i.e., files starting with a bash shebang like `#!/bin/bash`).
+2. **`lineinfile` with `backrefs: yes`** — appends ` -x` to the matched shebang line (`\1 -x`), enabling `set -x`–style tracing for that script.
+
+**When `opdk_debug_mode: 'off'`**
+
+1. **`find`** — locates files whose shebang already includes ` -x` (matches `^{{ bash_regex }} -x`).
+2. **`lineinfile` with `backrefs: yes`** — strips ` -x` back off the shebang (`\1`), restoring each script to its original state.
+
+The role is fully reversible: running it with `'on'` and then `'off'` returns every script to its prior state with no residue.
+
+---
+
+## Role variables (selected)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `opdk_debug_mode` | — (required) | `'on'` enables debug tracing; `'off'` removes it |
+| `apigee_home` | `/opt/apigee` | Apigee installation root |
+| `component_name` | — (optional) | Target a single component; omit to sweep all components on the node |
+| `bash_regex` | `#.*bash` | Regex matching bash shebang lines (first-line filter) |
+
+---
+
+## Usage
+
+Enable debug tracing on all components on a node:
+
+```yaml
+- hosts: servers
+  roles:
+    - { role: apigee-opdk-debug-mode, opdk_debug_mode: 'on' }
+```
+
+Enable debug tracing on a single component:
+
+```yaml
+- hosts: servers
+  vars:
+    opdk_debug_mode: 'on'
+    component_name: edge-router
+  roles:
+    - { role: apigee-opdk-debug-mode }
+```
+
+Disable debug tracing (restore original shebangs):
+
+```yaml
+- hosts: servers
+  roles:
+    - { role: apigee-opdk-debug-mode, opdk_debug_mode: 'off' }
+```
+
+---
+
+## Provenance
+
+Authored and maintained by **Carlos Frias** during his tenure on Apigee Edge Private Cloud. One of the operations roles in the `apigee-opdk-*` corpus — the same expertise is aggregated in the [`apigee-edge-opdk`](https://github.com/carlosfrias/apigee-edge-opdk) framework.
+
+Contributions welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## License
+
+See [LICENSE](./LICENSE).
