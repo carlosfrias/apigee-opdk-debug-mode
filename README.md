@@ -1,5 +1,8 @@
 # apigee-opdk-debug-mode — Reversible Bash Debug Toggle for OPDK Components
 
+> 🔄 **Evolution note:** The automation approach from this OPDK-era role has been consolidated into the `apigee-hybrid-workspace` Ansible collection. See the successor capability in the portfolio hub: [`carlosfrias/apigee-hybrid-workspace`](https://github.com/carlosfrias/apigee-hybrid-workspace) → `bap_coe/private_cloud/` and `bap_coe/apigee_hybrid/`. The collection README explains each role group’s business value and production context.
+
+
 > **An Ansible role that toggles the `-x` debug flag across all (or a single) Apigee OPDK component shell scripts — and reverses it cleanly** — enabling verbose script tracing on demand without manual edits or permanent side effects.
 
 > [!NOTE]
